@@ -1,3 +1,5 @@
+// All of UnknownApp backend code is in one file!
+
 // Set up a server
 
 const { query } = require('express');
@@ -26,9 +28,6 @@ client.connect();
 app.get('/', (req, res) => {
     res.send("HALF-LIFE 2 IS THE BEST GAME EVER. PERIOD.");
 });
-
-
-// 
 
 
 // Status request
