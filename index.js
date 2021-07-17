@@ -20,7 +20,9 @@ app.listen(PORT, function() {
 const { MongoClient } = require('mongodb');
 const CONNECTION_URL = "mongodb+srv://RandomUser:NYRjkAaMbCmzl4Aq@randomcluster.klfjq.mongodb.net/myFirstDatabase?retryWrites=true&w=majority";
 const client = new MongoClient(CONNECTION_URL, { useUnifiedTopology: true });
-client.connect();
+client.connect().then(() => {
+    console.log('mongodb connected.');
+});
 
 
 // Receive request to Home Page
@@ -358,7 +360,7 @@ app.get('/deleteGroup', (req, res) => {
 // Remove group from mongoDB
 
 async function deleteGroup(groupID) {
-    const result = await client.db("RandomData").collection("RandomCollection").removeOne({ "_id": groupID });
+    const result = await client.db("RandomData").collection("RandomCollection").deleteOne({ "_id": groupID });
 }
 
 

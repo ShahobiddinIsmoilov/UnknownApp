@@ -1,0 +1,26 @@
+{
+    "name": "unknownapp",
+    "version": "1.0.0",
+    "description": "This program has no name. Please help me choose",
+    "main": "index.js",
+    "dependencies": {
+        "express": "^4.17.1",
+        "mongodb": "^4.0.0",
+        "nodemon": "^2.0.12"
+    },
+    "devDependencies": {},
+    "scripts": {
+        "devm": "nodemon index.js",
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/ShahobiddinIsmoilov/UnknownApp.git"
+    },
+    "author": "Shahobiddin Ismoilov",
+    "license": "MIT",
+    "bugs": {
+        "url": "https://github.com/ShahobiddinIsmoilov/UnknownApp/issues"
+    },
+    "homepage": "https://github.com/ShahobiddinIsmoilov/UnknownApp#readme"
+}
