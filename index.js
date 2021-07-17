@@ -8,7 +8,7 @@ const PORT = process.env.PORT || 3000;
 const app = express();
 
 app.use(express.json());
-app.use(express.urlencoded({ extended : true }));
+app.use(express.urlencoded({ extended: true }));
 
 app.listen(PORT, function() {
     console.log(`Server is running on port, ${PORT}.`);
@@ -34,10 +34,11 @@ app.get('/', (req, res) => {
 
 app.get('/status', (req, res) => {
     let query = req.query;
-    const cargo = findSimilar({_id: query.groupID});
+    const cargo = findSimilar({ _id: query.groupID });
     cargo.then((value_gs) => {
-        if(value_gs.found === true) {
-            let array = value_gs.list, k = -1;
+        if (value_gs.found === true) {
+            let array = value_gs.list,
+                k = -1;
             for (let i = 0; i < array.length; i++) {
                 if (array[i].phoneNumber == query.phoneNumber) {
                     k = i;
@@ -51,13 +52,11 @@ app.get('/status', (req, res) => {
                     uncleanables: array[k].uncleanables,
                     message: array[k].message
                 });
-            }
-            else res.json({
+            } else res.json({
                 ok: "false",
                 errCode: "no_student_found"
             });
-        }
-        else res.json({
+        } else res.json({
             ok: "false",
             errCode: "no_group_found"
         });
@@ -86,7 +85,7 @@ app.get('/groupInfo', (req, res) => {
             teacher: value_gs.teacher,
             date: value_gs.date,
             cashier: value_gs.cashier,
-	    cashierName: value_gs.cashierName,
+            cashierName: value_gs.cashierName,
             students: value_gs.list
         });
     }).catch((err) => {
@@ -119,7 +118,7 @@ app.get('/students', (req, res) => {
 
 // Receive request to change name
 
-app.get('/changeName', (req, res) =>  {
+app.get('/changeName', (req, res) => {
     let query = req.query;
     changeName(query.phoneNumber, query.name).then(() => {
         res.json({
@@ -137,16 +136,13 @@ app.get('/changeName', (req, res) =>  {
 // Change name
 
 async function changeName(phoneNumber, newName) {
-    const result = await client.db("RandomData").collection("RandomCollection").updateOne(
-        {
-            "students.phoneNumber": phoneNumber
-        },
-        {
-            $set: {
-                "students.$.name": newName
-            }
+    const result = await client.db("RandomData").collection("RandomCollection").updateOne({
+        "students.phoneNumber": phoneNumber
+    }, {
+        $set: {
+            "students.$.name": newName
         }
-    );
+    });
 }
 
 
@@ -170,24 +166,21 @@ app.get('/update', (req, res) => {
 // Update status
 
 async function updateStatus(phoneNumber, cleanables, uncleanables, message) {
-    const result = await client.db("RandomData").collection("RandomCollection").updateOne(
-        {
-            "students.phoneNumber": phoneNumber
-        },
-        { 
-            $set: {
-                "students.$.cleanables": cleanables,
-                "students.$.uncleanables": uncleanables,
-                "students.$.message": message
-            }
+    const result = await client.db("RandomData").collection("RandomCollection").updateOne({
+        "students.phoneNumber": phoneNumber
+    }, {
+        $set: {
+            "students.$.cleanables": cleanables,
+            "students.$.uncleanables": uncleanables,
+            "students.$.message": message
         }
-    );
+    });
 }
 
 
 // Receive request to appoint a new cashier
 
-app.get('/setCashier', (req, res) =>  {
+app.get('/setCashier', (req, res) => {
     let query = req.query;
     setCashier(query.groupID, query.phoneNumber, query.cashierName).then(() => {
         res.json({
@@ -205,24 +198,21 @@ app.get('/setCashier', (req, res) =>  {
 // Appoint new cashier
 
 async function setCashier(groupID, phoneNumber, cashierName) {
-    const result = await client.db("RandomData").collection("RandomCollection").updateMany(
-        {
-            "_id": groupID
-        },
-        {
-            $set: {
-                "cashier": phoneNumber,
-                "password": "null",
-                "cashierName": cashierName
-            }
+    const result = await client.db("RandomData").collection("RandomCollection").updateMany({
+        "_id": groupID
+    }, {
+        $set: {
+            "cashier": phoneNumber,
+            "password": "null",
+            "cashierName": cashierName
         }
-    );
+    });
 }
 
 
 // Receive request to change password
 
-app.get('/changePassword', (req, res) =>  {
+app.get('/changePassword', (req, res) => {
     let query = req.query;
     updatePassword(query.groupID, query.password).then(() => {
         res.json({
@@ -240,16 +230,13 @@ app.get('/changePassword', (req, res) =>  {
 // Change password
 
 async function updatePassword(groupID, password) {
-    const result = await client.db("RandomData").collection("RandomCollection").updateOne(
-        {
-            "_id": groupID
-        },
-        {
-            $set: {
-                "password": password
-            }
+    const result = await client.db("RandomData").collection("RandomCollection").updateOne({
+        "_id": groupID
+    }, {
+        $set: {
+            "password": password
         }
-    );
+    });
 }
 
 
@@ -258,15 +245,14 @@ async function updatePassword(groupID, password) {
 app.get('/checkGroup', (req, res) => {
     let query = req.query;
     const ID = buildID(query.level, query.days, query.time, query.teacher, query.date);
-    const cargo = findSimilar({_id: ID});
+    const cargo = findSimilar({ _id: ID });
     cargo.then((value) => {
         if (value.found) {
             res.json({
                 ok: "true",
                 found: "true"
             });
-        }
-        else {
+        } else {
             res.json({
                 ok: "true",
                 found: "false"
@@ -285,15 +271,14 @@ app.get('/checkGroup', (req, res) => {
 
 app.get('/checkGroupID', (req, res) => {
     let query = req.query;
-    const cargo = findSimilar({_id: query.groupID});
+    const cargo = findSimilar({ _id: query.groupID });
     cargo.then((value) => {
         if (value.found) {
             res.json({
                 ok: "true",
                 found: "true"
             });
-        }
-        else {
+        } else {
             res.json({
                 ok: "true",
                 found: "false"
@@ -325,15 +310,13 @@ app.get('/addGroup', (req, res) => {
         cashier: query.phoneNumber,
         password: query.password,
         cashierName: query.cashierName,
-        students: [
-            {
-                phoneNumber: query.phoneNumber,
-                name: query.name,
-                cleanables: 0,
-                uncleanables: 0,
-                message: ""
-            }
-        ]
+        students: [{
+            phoneNumber: query.phoneNumber,
+            name: query.name,
+            cleanables: 0,
+            uncleanables: 0,
+            message: ""
+        }]
     }).then(() => {
         res.json({
             ok: "true",
@@ -375,9 +358,7 @@ app.get('/deleteGroup', (req, res) => {
 // Remove group from mongoDB
 
 async function deleteGroup(groupID) {
-    const result = await client.db("RandomData").collection("RandomCollection").removeOne(
-        { "_id": groupID}
-    );
+    const result = await client.db("RandomData").collection("RandomCollection").removeOne({ "_id": groupID });
 }
 
 
@@ -400,8 +381,7 @@ app.get('/checkStudent', (req, res) => {
                 cashier: value.cashier,
                 password: value.password
             });
-        }
-        else {
+        } else {
             res.json({
                 ok: "true",
                 found: "false"
@@ -420,7 +400,7 @@ app.get('/checkStudent', (req, res) => {
 
 app.get('/checkCode', (req, res) => {
     let query = req.query;
-    const cargo = findSimilar({code: query.code});
+    const cargo = findSimilar({ code: query.code });
     cargo.then((value) => {
         if (value.found) {
             res.json({
@@ -429,8 +409,7 @@ app.get('/checkCode', (req, res) => {
                 groupID: value.groupID,
                 cashier: value.cashier
             });
-        }
-        else {
+        } else {
             res.json({
                 ok: "true",
                 found: "false"
@@ -471,9 +450,7 @@ app.get('/joinGroup', (req, res) => {
 // Insert new student to a group
 
 async function insertStudent(invite_code, newStudent) {
-    const result = await client.db("RandomData").collection("RandomCollection").updateOne(
-        { "code": invite_code }, { $push: { "students": newStudent } }
-    );
+    const result = await client.db("RandomData").collection("RandomCollection").updateOne({ "code": invite_code }, { $push: { "students": newStudent } });
 }
 
 
@@ -499,9 +476,7 @@ app.get('/leaveGroup', (req, res) => {
 // Remove student from a group
 
 async function removeStudent(groupID, student) {
-    const result = await client.db("RandomData").collection("RandomCollection").updateOne(
-        { "_id": groupID}, { $pull: { "students": student}}
-    );
+    const result = await client.db("RandomData").collection("RandomCollection").updateOne({ "_id": groupID }, { $pull: { "students": student } });
 }
 
 
@@ -521,17 +496,17 @@ function findSimilar(value) {
                     teacher: data.teacher,
                     date: data.date,
                     cashier: data.cashier,
-		    cashierName: data.cashierName,
-		    password: data.password,
+                    cashierName: data.cashierName,
+                    password: data.password,
                     list: data.students
                 });
             else
-                resolve({found: false});
+                resolve({ found: false });
         }).catch(err => {
-            reject({errorCode: "operation_error"});
+            reject({ errorCode: "operation_error" });
         });
     }).catch(err => {
-        reject({errorCode: "operation_error"});
+        reject({ errorCode: "operation_error" });
     });
 }
 
@@ -540,8 +515,8 @@ function findSimilar(value) {
 
 function findStudent(studentID) {
     return new Promise((resolve, reject) => {
-        (client.db("RandomData").collection("RandomCollection").findOne( {
-            students: { $elemMatch: {phoneNumber: studentID}}
+        (client.db("RandomData").collection("RandomCollection").findOne({
+            students: { $elemMatch: { phoneNumber: studentID } }
         })).then((data) => {
             if (data)
                 resolve({
@@ -558,12 +533,12 @@ function findStudent(studentID) {
                     list: data.students
                 });
             else
-                resolve({found: false});
+                resolve({ found: false });
         }).catch(err => {
-            reject({errorCode: "operation_error"});
+            reject({ errorCode: "operation_error" });
         });
     }).catch(err => {
-        reject({errorCode: "operation_error"});
+        reject({ errorCode: "operation_error" });
     });
 }
 
@@ -581,10 +556,10 @@ function buildID(gLevel, gDays, gTime, gTeacher, gDate) {
 // Generate invite link
 
 function buildCode(length) {
-    var result           = '';
-    var characters       = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    var result = '';
+    var characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
     var charactersLength = characters.length;
-    for ( var i = 0; i < length; i++ ) {
+    for (var i = 0; i < length; i++) {
         result += characters.charAt(Math.floor(Math.random() * charactersLength));
     }
     return result;
